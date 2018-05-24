@@ -3,6 +3,7 @@
 GET        /vat-overview           controllers.VatDetailsController.details
 GET        /what-you-owe           controllers.OpenPaymentsController.openPayments
 GET        /account/details        controllers.AccountDetailsController.accountDetails
+GET        /payments-history        controllers.PaymentsHistoryController.paymentHistory
 
 GET       /make-payment/:amountInPence/:taxPeriodMonth/:taxPeriodYear   controllers.MakePaymentController.makePayment(amountInPence: Long, taxPeriodMonth: Int, taxPeriodYear: Int)
 
