@@ -16,9 +16,12 @@
 
 @import views.html.templates.formatters.breadcrumbs._
 @import views.html.templates.formatters.tabs._
+@import views.html.templates.formatters.dates._
+@import views.html.templates.formatters.money._
 @import views.html.templates.payments._
+@import models.viewModels.PaymentsHistoryViewModel
 
-@(user: User)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(model: PaymentsHistoryViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @views.html.main_template(title = messages("paymentsHistory.title"), bodyClasses = None, appConfig = appConfig) {
 
@@ -34,8 +37,41 @@
       <h1 class="heading-xlarge">@messages("paymentsHistory.heading")</h1>
 
       <ul class="tabs-nav">
-        @paymentsHistoryTabs(Seq(2017, 2018), 2018)
+        @paymentsHistoryTabs(model.displayedYears, model.selectedYear)
+
+        @if(model.displayedYears.head != model.selectedYear) {
+          @activeTab(messages("paymentsHistory.previousReturns"), messages("paymentsHistory.activePrevious"))
+        } else {
+          @inactiveTab(
+            messages("paymentsHistory.previousReturns"),
+            messages("paymentsHistory.inactivePrevious"),
+            controllers.routes.ReturnObligationsController.submittedReturns(model.displayedYears.head - 1).url
+          )
+        }
       </ul>
+
+      <h2>@messages("paymentsHistory.historyYear", model.selectedYear.toString)</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">@messages("paymentsHistory.paymentReceivedTitle")</th>
+            <th scope="col">@messages("paymentsHistory.descriptionTitle")</th>
+            <th class="numeric" scope="col">@messages("paymentsHistory.amountPaidTitle")</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for(transaction <- model.transactions) {
+            <tr>
+              <td scope="row">@displayDate(transaction.clearedDate)</td>
+              <td>@messages("paymentsHistory.description", transaction.clearedDate, transaction.clearedDate)</td>
+              <td class="numeric">@displayMoney(transaction.amount)</td>
+            </tr>
+          }
+        </tbody>
+
+      </table>
 
     </div>
   </div>

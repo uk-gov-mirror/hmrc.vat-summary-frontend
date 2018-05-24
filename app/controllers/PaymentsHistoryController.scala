@@ -18,23 +18,64 @@ package controllers
 
 import audit.AuditingService
 import config.AppConfig
+import connectors.httpParsers.ResponseHttpParsers.HttpGetResult
 import javax.inject.Inject
+import models.User
+import models.viewModels.{PaymentsHistoryModel, PaymentsHistoryViewModel}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.EnrolmentsAuthService
+import services.{DateService, EnrolmentsAuthService, PaymentsService}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 class PaymentsHistoryController @Inject()(val messagesApi: MessagesApi,
-                                       val enrolmentsAuthService: EnrolmentsAuthService,
-                                       implicit val appConfig: AppConfig,
-                                       auditingService: AuditingService)
+                                          val paymentsService: PaymentsService,
+                                          dateService: DateService,
+                                          val enrolmentsAuthService: EnrolmentsAuthService,
+                                          implicit val appConfig: AppConfig,
+                                          auditingService: AuditingService)
   extends AuthorisedController with I18nSupport {
 
 
-  def paymentHistory(): Action[AnyContent] = authorisedAction { implicit request =>
+  def paymentHistory(year: Int): Action[AnyContent] = authorisedAction { implicit request =>
     user =>
-      Future.successful(Ok(views.html.payments.paymentHistory(user)))
+      if (isValidSearchYear(year)) {
+        getFinancialTransactions(user, year).map {
+          case Right(model) => Ok(views.html.payments.paymentHistory(model))
+          case Left(_) => InternalServerError(views.html.errors.paymentsError())
+        }
+
+      } else {
+        Future.successful(NotFound(views.html.errors.notFound()))
+      }
+  }
+
+  private[controllers] def getFinancialTransactions(user: User, selectedYear: Int)
+                                               (implicit hc: HeaderCarrier): Future[HttpGetResult[PaymentsHistoryViewModel]] = {
+
+    val historyYears: Seq[Int] = Seq[Int](2018)
+
+    paymentsService.getPaymentsHistory(user, selectedYear).map {
+      case Right(PaymentsHistoryModel(transactions)) =>
+        Right(PaymentsHistoryViewModel(
+          historyYears,
+          selectedYear,
+          transactions.map(transaction =>
+            PaymentsHistoryModel(
+              transaction.taxPeriodFrom,
+              transaction.taxPeriodTo,
+              transaction.amount,
+              transaction.clearedDate
+            )
+          )
+        ))
+      case Left(error) => Left(error)
+    }
+  }
+
+  private[controllers] def isValidSearchYear(year: Int, upperBound: Int = dateService.now().getYear) = {
+    year <= upperBound && year >= upperBound - 1
   }
 
 }
