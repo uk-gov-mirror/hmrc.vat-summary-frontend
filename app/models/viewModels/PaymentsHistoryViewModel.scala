@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package models.payments
+package models.viewModels
 
-import play.api.libs.json.{Json, Reads}
-
-
-case class Payments(payments: Seq[Payment])
-
-object Payments {
-
-  implicit val reads: Reads[Payments] = Json.reads[Payments]
-}
+case class PaymentsHistoryViewModel(displayedYears: Seq[Int],
+                                    selectedYear: Int,
+                                    transactions: Seq[PaymentsHistoryModel])

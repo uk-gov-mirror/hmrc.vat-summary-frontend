@@ -60,7 +60,7 @@ class VatDetailsService @Inject()(vatApiConnector: VatApiConnector,
       .map(obligations => getNextObligation(obligations.obligations, date)).value
 
     val nextPayment = EitherT(financialDataConnector.getOpenPayments(user.vrn))
-      .map(payments => getNextObligation(payments.financialTransactions, date)
+      .map(payments => getNextObligation(payments.payments, date)
       .filter(payment => payment.outstandingAmount > 0)).value
 
     for {
