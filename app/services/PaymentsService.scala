@@ -40,7 +40,7 @@ class PaymentsService @Inject()(financialDataConnector: FinancialDataConnector, 
     }
 
   def getPaymentsHistory(user: User, searchYear: Int)
-                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpGetResult[PaymentsHistoryModel]] = {
+                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpGetResult[Seq[PaymentsHistoryModel]]] = {
     val from: LocalDate = LocalDate.parse(s"$searchYear-01-01")
     val to: LocalDate = LocalDate.parse(s"$searchYear-12-31")
 

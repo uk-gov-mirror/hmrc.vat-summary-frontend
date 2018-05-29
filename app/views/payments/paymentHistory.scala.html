@@ -45,7 +45,7 @@
           @inactiveTab(
             messages("paymentsHistory.previousReturns"),
             messages("paymentsHistory.inactivePrevious"),
-            controllers.routes.ReturnObligationsController.submittedReturns(model.displayedYears.head - 1).url
+            controllers.routes.PaymentsHistoryController.paymentHistory(model.displayedYears.head - 1).url
           )
         }
       </ul>

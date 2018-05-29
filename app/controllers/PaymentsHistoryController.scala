@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.httpParsers.ResponseHttpParsers.HttpGetResult
 import javax.inject.Inject
 import models.User
-import models.viewModels.{PaymentsHistoryModel, PaymentsHistoryViewModel}
+import models.viewModels.PaymentsHistoryViewModel
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.{DateService, EnrolmentsAuthService, PaymentsService}
@@ -57,18 +57,11 @@ class PaymentsHistoryController @Inject()(val messagesApi: MessagesApi,
     val historyYears: Seq[Int] = Seq[Int](2018)
 
     paymentsService.getPaymentsHistory(user, selectedYear).map {
-      case Right(PaymentsHistoryModel(transactions)) =>
+      case Right(transactions) =>
         Right(PaymentsHistoryViewModel(
           historyYears,
           selectedYear,
-          transactions.map(transaction =>
-            PaymentsHistoryModel(
-              transaction.taxPeriodFrom,
-              transaction.taxPeriodTo,
-              transaction.amount,
-              transaction.clearedDate
-            )
-          )
+          transactions
         ))
       case Left(error) => Left(error)
     }
