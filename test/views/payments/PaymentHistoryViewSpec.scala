@@ -91,7 +91,8 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
             taxPeriodTo = Some(LocalDate.parse(s"2018-04-01")),
             amount = 987654321,
             clearedDate = Some(LocalDate.parse(s"2018-03-01"))
-          ))
+          )),
+        Some(LocalDate.parse("2019-01-01"))
       )
 
       lazy val view = views.html.payments.paymentHistory(paymentHistoryModel)
@@ -210,7 +211,8 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
         val paymentHistoryModel: PaymentsHistoryViewModel = PaymentsHistoryViewModel(
           historyYears,
           previousYear,
-          Seq.empty
+          Seq.empty,
+          Some(LocalDate.parse("2019-01-01"))
         )
 
         lazy val view = views.html.payments.paymentHistory(paymentHistoryModel)
@@ -260,7 +262,8 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
         val paymentHistoryModel: PaymentsHistoryViewModel = PaymentsHistoryViewModel(
           historyYears,
           currentYear,
-          Seq.empty
+          Seq.empty,
+          Some(LocalDate.parse("2019-01-01"))
         )
 
         lazy val view = views.html.payments.paymentHistory(paymentHistoryModel)
@@ -325,7 +328,8 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
               taxPeriodTo = Some(LocalDate.parse(s"2018-02-01")),
               amount = 500.00,
               clearedDate = Some(LocalDate.parse(s"2018-03-01"))
-            ))
+            )),
+          Some(LocalDate.parse("2019-01-01"))
         ),
           ChargeType.apply(historyChargeHelper.name).value,
           PaymentMessages.getMessagesForChargeType(historyChargeHelper.name)._1,

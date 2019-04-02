@@ -21,6 +21,7 @@ import java.time.LocalDate
 import audit.AuditingService
 import audit.models.ExtendedAuditModel
 import common.TestModels.{customerInformation, customerInformationHybrid}
+import connectors.VatSubscriptionConnector
 import connectors.httpParsers.ResponseHttpParsers.HttpGetResult
 import controllers.predicates.HybridUserPredicate
 import models.errors.{UnknownError, VatLiabilitiesError}
@@ -98,7 +99,8 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
             amount        = 987654321,
             clearedDate   = Some(LocalDate.parse("2018-05-01"))
           )
-        )
+        ),
+        customerMigratedToETMPDate = None
       ))
 
     val authResult: Future[_] =
@@ -107,6 +109,7 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
       )))
 
     val serviceCall: Boolean = true
+    val accountDetailsCall: Boolean = false
     val authCall: Boolean = true
     val targetYear: Int = 2018
     val testUser: User = User("999999999")
@@ -116,6 +119,7 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
 
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val mockPaymentsService: PaymentsService = mock[PaymentsService]
+    val mockVatSubscriptionConnector: VatSubscriptionConnector = mock[VatSubscriptionConnector]
     val mockDateService: DateService = mock[DateService]
     val mockAuditService: AuditingService = mock[AuditingService]
     val mockEnrolmentsAuthService: EnrolmentsAuthService = new EnrolmentsAuthService(mockAuthConnector)
@@ -136,7 +140,6 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
         (mockAuthConnector.authorise(_: Predicate, _: Retrieval[_])(_: HeaderCarrier, _: ExecutionContext))
           .expects(*, *, *, *)
           .returns(authResult)
-
         (mockAccountDetailsService.getAccountDetails(_: String)(_: HeaderCarrier, _: ExecutionContext))
           .expects(*, *, *)
           .returns(accountDetailsResponse)
@@ -155,6 +158,12 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
           .expects(*, *, *, *).noMoreThanOnce()
           .returns(serviceResultYearTwo)
       }
+
+      if(accountDetailsCall) {
+        (mockAccountDetailsService.getAccountDetails(_: String)(_: HeaderCarrier, _: ExecutionContext))
+          .expects(*, *, *)
+          .returns(accountDetailsResponse)
+      }
     }
 
     def target: PaymentHistoryController = {
@@ -162,9 +171,11 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
       new PaymentHistoryController(
         messages,
         mockPaymentsService,
+        mockVatSubscriptionConnector,
         mockAuthorisedController,
         mockDateService,
         mockEnrolmentsAuthService,
+        mockAccountDetailsService,
         mockAppConfig,
         mockAuditService)
     }
@@ -175,16 +186,19 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
     "the user is logged in" should {
 
       "return 200" in new Test {
+        override val accountDetailsCall: Boolean = true
         private val result = target.paymentHistory(targetYear)(fakeRequest)
         status(result) shouldBe Status.OK
       }
 
       "return HTML" in new Test {
+        override val accountDetailsCall: Boolean = true
         private val result = target.paymentHistory(targetYear)(fakeRequest)
         contentType(result) shouldBe Some("text/html")
       }
 
       "return charset utf-8" in new Test {
+        override val accountDetailsCall: Boolean = true
         private val result = target.paymentHistory(targetYear)(fakeRequest)
         charset(result) shouldBe Some("utf-8")
       }
@@ -263,6 +277,7 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
     "the user enters an invalid search year for their payment history" should {
 
       "return 404 (Not Found)" in new Test {
+        override val accountDetailsCall: Boolean = true
         override val serviceCall = false
         override val targetYear = 2021
         private val result = target.paymentHistory(targetYear)(fakeRequest)
@@ -273,6 +288,7 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
     "an error occurs upstream" should {
 
       "return a 500" in new Test {
+        override val accountDetailsCall: Boolean = true
         override val serviceResultYearOne = Left(VatLiabilitiesError)
         override val serviceResultYearTwo = Left(VatLiabilitiesError)
         private val result: Result = await(target.paymentHistory(targetYear)(fakeRequest))
@@ -281,6 +297,7 @@ class PaymentHistoryControllerSpec extends ControllerBaseSpec {
       }
 
       "return the standard error view" in new Test {
+        override val accountDetailsCall: Boolean = true
         override val serviceResultYearOne = Left(VatLiabilitiesError)
         override val serviceResultYearTwo = Left(VatLiabilitiesError)
         private val result: Result = await(target.paymentHistory(targetYear)(fakeRequest))

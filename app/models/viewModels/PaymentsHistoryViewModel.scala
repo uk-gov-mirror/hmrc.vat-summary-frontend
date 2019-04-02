@@ -16,6 +16,9 @@
 
 package models.viewModels
 
+import java.time.LocalDate
+
 case class PaymentsHistoryViewModel(displayedYears: Seq[Int],
                                     selectedYear: Int,
-                                    transactions: Seq[PaymentsHistoryModel])
+                                    transactions: Seq[PaymentsHistoryModel],
+                                    customerMigratedToETMPDate: Option[LocalDate])
