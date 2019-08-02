@@ -126,12 +126,13 @@ class VatDetailsController @Inject()(val messagesApi: MessagesApi,
     )
   }
 
-
   def retrieveMandationStatus(vrn: String)(implicit request: Request[AnyContent]): Future[HttpGetResult[MandationStatus]] = {
-    val mtdMandationSessionKey = SessionKeys.mandationStatus
+    val mtdMandationSession = request.session.get(SessionKeys.mandationStatus)
+    val vatOptOutSession = request.session.get(SessionKeys.optOutSuccessful)
 
-    request.session.get(mtdMandationSessionKey) match {
-      case Some(value) => Future.successful(Right(MandationStatus(value)))
+    (mtdMandationSession, vatOptOutSession) match {
+      case (_, Some("true")) => mandationStatusService.getMandationStatus(vrn)
+      case (Some(value), _) => Future.successful(Right(MandationStatus(value)))
       case _ => mandationStatusService.getMandationStatus(vrn)
     }
   }

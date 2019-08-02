@@ -566,18 +566,11 @@ class VatDetailsControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "Calling .retrieveMandationStatus" should {
-    "return a mandation status" when {
-      "it is available in session" in new DetailsTest {
-        implicit val fakeRequestWithSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-          "mtdVatMandationStatus" -> "Non MTDfB"
-        )
+  "Calling .retrieveMandationStatus" when {
 
-        val result: Future[HttpGetResult[MandationStatus]] = target(false).retrieveMandationStatus("111111111")(fakeRequestWithSession)
+    "there is a vat opt out success in session" should {
 
-        await(result) shouldBe Right(MandationStatus("Non MTDfB"))
-      }
-      "it is needs to be collected from the mandation service" in new DetailsTest {
+      "retrieve the mandation service from the service" in new DetailsTest {
         implicit val fakeRequestWithEmptySession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()
 
         override def setup(needMandationCall: Boolean): Any = {
@@ -591,14 +584,52 @@ class VatDetailsControllerSpec extends ControllerBaseSpec {
         await(result) shouldBe Right(MandationStatus("Non MTDfB"))
       }
     }
-    "return a HTTP error" when {
-      "one is received from the mandation service layer" in new DetailsTest {
-        (mockMandationService.getMandationStatus(_: String)(_: HeaderCarrier, _: ExecutionContext))
-          .expects(*, *, *)
-          .returning(Future.successful(Left(BadRequestError("", ""))))
 
-        val result: Future[HttpGetResult[MandationStatus]] = target(false).retrieveMandationStatus("111111111")(fakeRequest)
-        await(result) shouldBe Left(BadRequestError("", ""))
+    "there is not a vat opt out success in session" when {
+
+      "there is a mandation status in session" should {
+
+        "use the value in session" in new DetailsTest {
+          implicit val fakeRequestWithSession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+            "mtdVatMandationStatus" -> "Non MTDfB"
+          )
+
+          val result: Future[HttpGetResult[MandationStatus]] = target(false).retrieveMandationStatus("111111111")(fakeRequestWithSession)
+
+          await(result) shouldBe Right(MandationStatus("Non MTDfB"))
+        }
+      }
+
+      "there is not a mandation status in session" when {
+
+        "the call to the mandation status service succeeds" should {
+
+          "retrieve the mandation service from the service" in new DetailsTest {
+            implicit val fakeRequestWithEmptySession: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()
+
+            override def setup(needMandationCall: Boolean): Any = {
+              (mockMandationService.getMandationStatus(_: String)(_: HeaderCarrier, _: ExecutionContext))
+                .expects(*, *, *)
+                .returning(Future.successful(Right(validNonMTDfBMandationStatus))).once()
+            }
+
+            val result: Future[HttpGetResult[MandationStatus]] = target().retrieveMandationStatus("111111111")(fakeRequestWithEmptySession)
+
+            await(result) shouldBe Right(MandationStatus("Non MTDfB"))
+          }
+        }
+
+        "the call to the mandation status service fails" should {
+
+          "return a HTTP error" in new DetailsTest {
+            (mockMandationService.getMandationStatus(_: String)(_: HeaderCarrier, _: ExecutionContext))
+              .expects(*, *, *)
+              .returning(Future.successful(Left(BadRequestError("", ""))))
+
+            val result: Future[HttpGetResult[MandationStatus]] = target(false).retrieveMandationStatus("111111111")(fakeRequest)
+            await(result) shouldBe Left(BadRequestError("", ""))
+          }
+        }
       }
     }
   }
