@@ -184,6 +184,11 @@ object ChargeType {
 
   val logger = Logger(getClass.getSimpleName)
 
+  val positiveOrNegativeChargeTypes: Set[ChargeType] = Set(
+    VatDefaultInterest,
+    VatFurtherInterest
+  )
+
   val allChargeTypes: Set[ChargeType] = Set(
     VatDefaultInterest,
     VatFurtherInterest,
@@ -238,7 +243,7 @@ object ChargeType {
     PaymentOnAccountInstalments,
     UnallocatedPayment,
     Refund
-  )
+  ) ++ positiveOrNegativeChargeTypes
 
   def apply: String => ChargeType = input => {
     allChargeTypes.find { chargeType =>

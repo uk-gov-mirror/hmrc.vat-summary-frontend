@@ -19,13 +19,18 @@
 @import views.templates.formatters.dates.DisplayDateRangeHelper.displayDate
 @import views.templates.payments.PaymentMessageHelper
 @import models.payments.{UnallocatedPayment, Refund}
+@import models.payments.ChargeType
 
 @this(positiveNegative: PositiveNegative)
 
 @(transaction: PaymentsHistoryModel)(implicit messages: Messages)
 
 @chargeType = @{
-  PaymentMessageHelper.getChargeType(transaction.chargeType.value)
+    if(ChargeType.positiveOrNegativeChargeTypes.contains(transaction.chargeType) && transaction.amount < 0) {
+        PaymentMessageHelper.getChargeType(transaction.chargeType.value).copy(id = "repayment")
+    } else {
+        PaymentMessageHelper.getChargeType(transaction.chargeType.value)
+    }
 }
 
 @transaction.clearedDate match {
