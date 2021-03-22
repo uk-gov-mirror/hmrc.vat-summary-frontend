@@ -36,9 +36,9 @@ class VatCertificateViewSpec extends ViewBaseSpec {
   object Selectors {
     val heading = "h1"
     val cardClass = ".card-full-container"
-    val printButton = "button"
-    val fullNameSelector = "#content > article > div:nth-child(5) > div.column-full.card-full > dl:nth-child(1) > div > dd"
-    val backLink = ".link-back"
+    val printButton = ".govuk-button"
+    val fullNameSelector = "div.card-full-container:nth-child(5) > div:nth-child(2) > table > tbody > tr:nth-child(1) > td:nth-child(2)"
+    val backLink = ".govuk-back-link"
   }
 
   lazy val model: VatCertificateViewModel = VatCertificateViewModel(
@@ -125,24 +125,29 @@ class VatCertificateViewSpec extends ViewBaseSpec {
 
       "have the about your registration card" that {
         lazy val card = document.select(Selectors.cardClass).first()
+
         "contains the correct heading" in {
           card.select("h2").text() shouldBe "About your registration"
         }
+
         "contains the VRN" in {
-          val vrnRow = card.select(".govuk-check-your-answers:nth-of-type(1)")
-          vrnRow.select("dt").text() shouldBe "VAT registration number (VRN)"
-          vrnRow.select("dd").text() shouldBe "5555555555"
+          val vrnRow = card.select("div.card-full > table:nth-of-type(1) > tbody > tr")
+          vrnRow.select("td:nth-of-type(1)").text() shouldBe "VAT registration number (VRN)"
+          vrnRow.select("td:nth-of-type(2)").text() shouldBe "5555555555"
         }
+
         "contains the registration date" in {
-          val regDateRow = card.select(".govuk-check-your-answers:nth-of-type(2)")
-          regDateRow.select("dt").text() shouldBe "Registration date"
-          regDateRow.select("dd").text() shouldBe s"1 January 2017"
+          val regDateRow = card.select("div.card-full > table:nth-of-type(2) > tbody > tr")
+          regDateRow.select("td:nth-of-type(1)").text() shouldBe "Registration date"
+          regDateRow.select("td:nth-of-type(2)").text() shouldBe "1 January 2017"
         }
+
         "contains the certificate date" in {
-          val certDateRow = card.select(".govuk-check-your-answers:nth-of-type(3)")
-          certDateRow.select("dt").text() shouldBe "Certificate date"
-          certDateRow.select("dd").text() shouldBe s"1 January 2018"
+          val certDateRow = card.select("div.card-full > table:nth-of-type(3) > tbody > tr")
+          certDateRow.select("td:nth-of-type(1)").text() shouldBe "Certificate date"
+          certDateRow.select("td:nth-of-type(2)").text() shouldBe "1 January 2018"
         }
+
       }
 
       "have the about the business card" that {
@@ -151,29 +156,29 @@ class VatCertificateViewSpec extends ViewBaseSpec {
           card.select("h2").text() shouldBe "About the business"
         }
         "contains the business name" in {
-          val vrnRow = card.select(".govuk-check-your-answers:nth-of-type(1)")
-          vrnRow.select("dt").text() shouldBe "Business name"
-          vrnRow.select("dd").text() shouldBe "Not provided"
+          val vrnRow = card.select("div.card-full:nth-of-type(2) > table:nth-child(1) > tbody > tr")
+          vrnRow.select("td:nth-child(1)").text() shouldBe "Business name"
+          vrnRow.select("td:nth-child(2)").text() shouldBe "Not provided"
         }
         "contains the trading name" in {
-          val regDateRow = card.select(".govuk-check-your-answers:nth-of-type(2)")
-          regDateRow.select("dt").text() shouldBe "Trading name"
-          regDateRow.select("dd").text() shouldBe s"ABC Traders"
+          val regDateRow = card.select("div.card-full:nth-of-type(2) > table:nth-child(2) > tbody > tr")
+          regDateRow.select("td:nth-child(1)").text() shouldBe "Trading name"
+          regDateRow.select("td:nth-child(2)").text() shouldBe "ABC Traders"
         }
         "contains the business type" in {
-          val certDateRow = card.select(".govuk-check-your-answers:nth-of-type(3)")
-          certDateRow.select("dt").text() shouldBe "Business type"
-          certDateRow.select("dd").text() shouldBe s"Organisation"
+          val certDateRow = card.select("div.card-full:nth-of-type(2) > table:nth-child(3) > tbody > tr")
+          certDateRow.select("td:nth-child(1)").text() shouldBe "Business type"
+          certDateRow.select("td:nth-child(2)").text() shouldBe "Organisation"
         }
         "contains the trade classification" in {
-          val certDateRow = card.select(".govuk-check-your-answers:nth-of-type(4)")
-          certDateRow.select("dt").text() shouldBe "Trade classification (SIC code)"
-          certDateRow.select("dd").text() shouldBe s"6602"
+          val certDateRow = card.select("div.card-full:nth-of-type(2) > table:nth-child(4) > tbody > tr")
+          certDateRow.select("td:nth-child(1)").text() shouldBe "Trade classification (SIC code)"
+          certDateRow.select("td:nth-child(2)").text() shouldBe "6602"
         }
         "contains the address" in {
-          val certDateRow = card.select(".govuk-check-your-answers:nth-of-type(5)")
-          certDateRow.select("dt").text() shouldBe "Principal place of business address"
-          certDateRow.select("dd").text() shouldBe s"Line 1 Line 2 TF4 3ER"
+          val certDateRow = card.select("div.card-full:nth-of-type(2) > table:nth-child(5) > tbody > tr")
+          certDateRow.select("td:nth-child(1)").text() shouldBe "Principal place of business address"
+          certDateRow.select("td:nth-child(2)").text() shouldBe "Line 1 Line 2 TF4 3ER"
         }
       }
 
@@ -200,9 +205,9 @@ class VatCertificateViewSpec extends ViewBaseSpec {
           card.select("h2").text() shouldBe "Return details"
         }
         "contains the return frequency" in {
-          val row = card.select(".govuk-check-your-answers:nth-of-type(1)")
-          row.select("dt").text() shouldBe "VAT Return dates"
-          row.select("dd").text() shouldBe "Every month"
+          val row = card.select("div.govuk-grid-column-full:nth-child(1) > table > tbody > tr")
+          row.select("td:nth-child(1)").text() shouldBe "VAT Return dates"
+          row.select("td:nth-child(2)").text() shouldBe "Every month"
         }
       }
 
@@ -238,8 +243,7 @@ class VatCertificateViewSpec extends ViewBaseSpec {
           lazy val view = vatCertificateView(
             HtmlFormat.empty, modelWithNSTP)(messages, mockConfig, request, user)
           lazy implicit val document: Document = Jsoup.parse(view.body)
-          elementText("#content > article > div:nth-child(6) > " +
-            "div.column-two-thirds > h2") shouldBe "Return details"
+          elementText("div.govuk-grid-column-full:nth-child(1) > h2:nth-child(1)") shouldBe "Return details"
         }
 
         "not have the non-standard return details card" in {

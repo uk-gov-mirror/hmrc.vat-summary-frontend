@@ -12,22 +12,12 @@
     padding-bottom: 0px;
   }
 
-  .heading-xlarge {
-    font-size: 30px;
-    margin-bottom: 12px;
-    margin-top: 0px;
-  }
-
   .cert-header {
     padding-bottom: 0px;
   }
 
   .cert-header img {
     width: 20%;
-  }
-
-  .heading-medium {
-    font-size: 12px;
   }
 
   .card-full-container {

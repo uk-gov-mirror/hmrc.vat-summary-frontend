@@ -19,12 +19,12 @@
 @()(implicit messages: Messages, appConfig: config.AppConfig)
 
 <section id="section-vat" class="section divider--bottom">
-    <h2 id="vat-reporting-heading" class="heading-medium">@messages("partials.btaHome.vatSection.reporting.heading")</h2>
-    <p>@messages("partials.btaHome.vatSection.deadlines")</p>
-    <p>@messages("partials.btaHome.vatSection.updateDetails")</p>
-    <p>
-        <a href="@{appConfig.btaVatOverviewUrl}">
-        @messages("partials.btaHome.vatSection.viewVatDetails")
-        </a>
-    </p>
+  <h2 id="vat-reporting-heading" class="govuk-heading-m">@messages("partials.btaHome.vatSection.reporting.heading")</h2>
+  <p class="govuk-body">@messages("partials.btaHome.vatSection.deadlines")</p>
+  <p class="govuk-body">@messages("partials.btaHome.vatSection.updateDetails")</p>
+  <p class="govuk-body">
+    <a class="govuk-link" href="@{appConfig.btaVatOverviewUrl}">
+      @messages("partials.btaHome.vatSection.viewVatDetails")
+    </a>
+  </p>
 </section>

@@ -28,39 +28,43 @@
 
 <div id="payment-@{count + 1}">
 
-<dl class="govuk-check-your-answers cya-questions-long what-you-owe-dl">
-    <div class="check-your-answer-row what-you-owe-row">
-        <dt class="cya-question what-you-owe-due-date">
-            <h2 class="bold heading-small what-you-owe-heading">@chargeDetails.title @chargeDescription.map { description => <div class="what-you-owe-subheading">@description</div> }</h2>
-            <div data-due="@(payment.due.toString)" class="form-hint">
-                @messages("openPayments.dueBy") @displayDate(payment.due,useShortDayFormat = true)
-                @if(payment.isOverdue) {
-                    <span class="inline"><strong class="task-overdue">@messages("common.overdue")</strong></span>
-                }
-            </div>
-        </dt>
-        <dd class="cya-answer what-you-owe-amount">
-            <span data-amount="@(payment.amount)">@displayMoney(payment.amount)</span>
-        </dd>
-        <dd class="cya-change what-you-owe-links">
-            <div>
-
-                <a href="@payment.makePaymentRedirect">
-                    <span>@chargeDetails.payLinkText</span>
-                    <span class="visuallyhidden">
-                    @displayMoney(payment.amount)
-                </span>
-                </a>
-            </div>
-
-            @if(chargeDetails.viewReturnEnabled) {
-            <a href="@appConfig.vatReturnUrl(payment.periodKey)">
-                <span class="visuallyhidden">@chargeDetails.viewReturnContext</span>
-                <span>@messages("openPayments.viewReturnLink")</span>
-            </a>
+  <table class="govuk-table">
+    <tbody>
+      <tr class="govuk-table__row govuk-table__cell govuk-check-your-answers">
+        <td class="govuk-table__cell govuk-!-padding-right-8">
+          <h2 class="govuk-!-font-weight-bold govuk-heading-s">
+            @chargeDetails.title @chargeDescription.map { description =>
+              <div class="what-you-owe-subheading">@description</div> }
+          </h2>
+          <div data-due="@(payment.due.toString)" class="govuk-hint">
+            @messages("openPayments.dueBy") @displayDate(payment.due,useShortDayFormat = true)
+            @if(payment.isOverdue) {
+              <strong class="task-overdue">@messages("common.overdue")</strong>
             }
-        </dd>
-    </div>
-</dl>
+          </div>
+        </td>
+        <td class="govuk-table__cell what-you-owe-amount">
+          <span data-amount="@(payment.amount)">@displayMoney(payment.amount)</span>
+        </td>
+        <td class="govuk-table__cell what-you-owe-links nowrap">
+          <a class="govuk-link" href="@payment.makePaymentRedirect">
+            <span>@chargeDetails.payLinkText</span>
+            <span class="govuk-visually-hidden">
+              @displayMoney(payment.amount)
+            </span>
+          </a>
+
+          @if(chargeDetails.viewReturnEnabled) {
+            <p class="govuk-body">
+              <a class="govuk-link what-you-owe-links" href="@appConfig.vatReturnUrl(payment.periodKey)">
+                <span class="govuk-visually-hidden">@chargeDetails.viewReturnContext</span>
+                <span>@messages("openPayments.viewReturnLink")</span>
+              </a>
+            </p>
+          }
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 }

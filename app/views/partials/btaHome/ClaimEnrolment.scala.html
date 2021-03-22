@@ -19,11 +19,11 @@
 @(vrn: String)(implicit messages: Messages, appConfig: config.AppConfig)
 
 <section id="section-vat" class="section divider--bottom">
-  <h2 id="vat-claim-enrolment-heading" class="heading-medium">@messages("partials.btaHome.claimEnrolment.heading")</h2>
-  <p>@messages("partials.btaHome.claimEnrolment.mandationInfo")</p>
+  <h2 id="vat-claim-enrolment-heading" class="govuk-heading-m">@messages("partials.btaHome.claimEnrolment.heading")</h2>
+  <p class="govuk-body">@messages("partials.btaHome.claimEnrolment.mandationInfo")</p>
 
-  <p>
-    <a href="@{appConfig.mtdVatClaimSubscriptionUrl}/@{vrn}">
+  <p class="govuk-body">
+    <a class="govuk-link" href="@{appConfig.mtdVatClaimSubscriptionUrl}/@{vrn}">
       @messages("partials.btaHome.claimEnrolment.addEnrolment")
     </a>
   </p>

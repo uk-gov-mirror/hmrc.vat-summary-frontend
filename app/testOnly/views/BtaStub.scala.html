@@ -18,8 +18,8 @@
 
 @(partial: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@mainTemplate(title = "BTA Landing Page Stub", bodyClasses = None, appConfig = appConfig) {
-  <h1>BTA Landing Page Stub</h1>
+@mainTemplate(title = "BTA Landing Page Stub", appConfig = appConfig) {
+  <h1 class="govuk-heading-l">BTA Landing Page Stub</h1>
 
  @partial
 }

@@ -28,6 +28,8 @@ class PaymentHistoryTabsTemplateSpec extends TemplateBaseSpec {
 
     val tab1Year = 2022
     val tab2Year = 2023
+    val tab1YearUnicode = """\32 022"""
+    val tab2YearUnicode = """\32 023"""
     val prevPayments = "Previous payments"
     val tabs = Seq(tab1Year, tab2Year)
 
@@ -37,19 +39,19 @@ class PaymentHistoryTabsTemplateSpec extends TemplateBaseSpec {
 
         val expectedMarkup = Html(
           s"""
-            |<ul>
-            |  <li class="tablinks">
-            |    <a href="#$tab1Year">
+            |<ul class="govuk-tabs__list">
+            |  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            |    <a class="govuk-tabs__tab govuk-heading-m" href="#$tab1YearUnicode">
             |      $tab1Year
             |    </a>
             |  </li>
-            |  <li class="tablinks">
-            |    <a href="#$tab2Year">
+            |  <li class="govuk-tabs__list-item">
+            |    <a class="govuk-tabs__tab govuk-heading-m" href="#$tab2YearUnicode">
             |      $tab2Year
             |    </a>
             |  </li>
-            |  <li class="tablinks">
-            |    <a href="#$prevPayments">
+            |  <li class="govuk-tabs__list-item">
+            |    <a class="govuk-tabs__tab govuk-heading-m" href="#$prevPayments">
             |      $prevPayments
             |    </a>
             |  </li>
@@ -68,14 +70,14 @@ class PaymentHistoryTabsTemplateSpec extends TemplateBaseSpec {
 
         val expectedMarkup = Html(
           s"""
-             |<ul>
-             |  <li class="tablinks">
-             |    <a href="#$tab1Year">
+             |<ul class="govuk-tabs__list">
+             |  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+             |    <a class="govuk-tabs__tab govuk-heading-m" href="#$tab1YearUnicode">
              |      $tab1Year
              |    </a>
              |  </li>
-             |  <li class="tablinks">
-             |    <a href="#$tab2Year">
+             |  <li class="govuk-tabs__list-item">
+             |    <a class="govuk-tabs__tab govuk-heading-m" href="#$tab2YearUnicode">
              |      $tab2Year
              |    </a>
              |  </li>

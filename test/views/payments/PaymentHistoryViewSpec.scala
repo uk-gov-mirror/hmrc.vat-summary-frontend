@@ -32,15 +32,15 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
 
   object Selectors {
     val pageHeading = "h1"
-    val btaBreadcrumb = "div.breadcrumbs li:nth-of-type(1)"
-    val btaBreadcrumbLink = "div.breadcrumbs li:nth-of-type(1) a"
-    val vatBreadcrumb = "div.breadcrumbs li:nth-of-type(2)"
-    val vatBreadcrumbLink = "div.breadcrumbs li:nth-of-type(2) a"
-    val paymentHistoryBreadcrumb = "div.breadcrumbs li:nth-of-type(3)"
-    val tabOne = "#content > article > div.grid-row > div > div > ul > li:nth-child(1) > a"
-    val tabTwo = "#content > article > div.grid-row > div > div > ul > li:nth-child(2) > a"
-    val tabThree = "#content > article > div.grid-row > div > div > ul > li:nth-child(3) > a"
-    val tabFour = "#content > article > div.grid-row > div > div > ul > li:nth-child(4) > a"
+    val btaBreadcrumb = "li.govuk-breadcrumbs__list-item:nth-child(1)"
+    val btaBreadcrumbLink = "li.govuk-breadcrumbs__list-item:nth-child(1) a"
+    val vatBreadcrumb = "li.govuk-breadcrumbs__list-item:nth-child(2)"
+    val vatBreadcrumbLink = "li.govuk-breadcrumbs__list-item:nth-child(2) a"
+    val paymentHistoryBreadcrumb = "li.govuk-breadcrumbs__list-item:nth-child(3)"
+    val tabOne = "li.govuk-tabs__list-item:nth-child(1) a"
+    val tabTwo = "li.govuk-tabs__list-item:nth-child(2) a"
+    val tabThree = "li.govuk-tabs__list-item:nth-child(3) a"
+    val tabFour = "li.govuk-tabs__list-item:nth-child(4) a"
     val currentYearSubheading = "#2018 > h2"
     val previousYearSubheading = "#2017 > h2"
     val previousYearNoPayments = "#2017 > p"
@@ -49,10 +49,10 @@ class PaymentHistoryViewSpec extends ViewBaseSpec {
     val prevPaymentsLink: String = prevPaymentsParagraph + " > a"
     val paymentDateTableHeading = "tr th:nth-of-type(1) div"
     val paymentDateTableContent = "tr td:nth-of-type(1)"
-    val descriptionTableChargeType = "tr td:nth-of-type(2) span.bold"
-    val descriptionTableContent = "tr td:nth-of-type(2) span:nth-of-type(2)"
+    val descriptionTableChargeType = "#charge-title"
+    val descriptionTableContent = "td.govuk-table__cell:nth-child(2) span.govuk-hint"
     val amountPaidTableContent = "tr td:nth-of-type(3)"
-    val insolvencyBanner = ".panel"
+    val insolvencyBanner = "div.govuk-form-group"
   }
 
   val currentYear = 2018
